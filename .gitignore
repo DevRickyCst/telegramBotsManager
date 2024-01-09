@@ -14,3 +14,4 @@ chalice.egg-info/
 .mypy_cache/
 *.pyc
 .vscode
+.env

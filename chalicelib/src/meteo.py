@@ -1,5 +1,6 @@
-import requests
 import os
+
+import requests
 
 
 def obtenir_meteo_ville(ville):
