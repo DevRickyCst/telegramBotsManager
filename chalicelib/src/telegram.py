@@ -10,15 +10,6 @@ class TelegramInterface:
         payload = {"chat_id": chat_id, "text": text}
         return requests.post(self.url + extra_url, data=payload)
 
-    def sendMessage2(self, text: str, chat_id: str):
-        extra_url = "/sendMessage"
-        payload = {
-            "chat_id": chat_id,
-            "text": text,
-            "reply_markup": {"keyboard": [[{"text": "ok"}], [{"text": "ok"}]]},
-        }
-        return requests.post(self.url + extra_url, data=payload)
-
     def sendImage(self, text: str, chat_id: str):
         extra_url = "/sendPhoto"
         payload = {

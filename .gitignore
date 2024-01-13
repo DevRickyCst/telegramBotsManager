@@ -15,3 +15,4 @@ chalice.egg-info/
 *.pyc
 .vscode
 .env
+test/

@@ -11,17 +11,24 @@ app = Chalice(app_name="telegramBots")
 app.register_blueprint(app_bots_manager)
 
 
-def bot_handler(bot_id, request):
-    params = request.json_body
-    message = Message(params)
-    print(f"Bot {bot_id} called by {message.user['username']}")
-    print(f"with params : {params}")
-
+def bot_handler(bot_id, message):
+    # Check if bot_id exist
     try:
+        # Import Bot
         module_name = import_module(f"chalicelib.bots.{bot_id}")
+        # Initialise telegram bot object
         bot_key = os.environ[bot_id]
         telegram = TelegramInterface(bot_key)
-        module_name.handle_message(message, telegram)
+        # Get command
+        command = message.input['command']
+        # Check if bot handle this command or not
+        if command in module_name.handle_command:
+            try:
+                module_name.handle_message(command, message, telegram)
+            except:
+                telegram.sendMessage(f'Fail to execute command {command}', message.chat["id"])
+        else:
+            telegram.sendMessage(f'No handler found for command /{command}\nAvailable commands are {module_name.handle_command}', message.chat["id"])
 
     except FileNotFoundError:
         print(f"No handler found for {bot_id}")
@@ -29,5 +36,15 @@ def bot_handler(bot_id, request):
 
 @app.route("/{bot_id}", methods=["POST", "GET"])
 def webhook_index(bot_id):
-    bot_handler(bot_id, app.current_request)
+    # Get input params
+    params = app.current_request.json_body
+    message = Message(params)
+
+    # If user send a command
+    if message.input['isCommand']:
+        print(f"Bot {bot_id} called by {message.user['username']}")
+        print(f"with params : {message}")
+
+        bot_handler(bot_id, message)
+
     return Response({"ok": True})

@@ -4,16 +4,15 @@ from chalicelib.src.telegram import TelegramInterface
 
 blockchain = BockchainInterface()
 
+handle_command = [
+    'getPrice'
+]
 
-def handle_message(msg: Message, telegram: TelegramInterface):
-    try:
-        symbolprice = blockchain.getPrice(symbol=msg.text)
+def handle_message(command: str, msg: Message, telegram: TelegramInterface):
+    if command == handle_command[0]:
+        symbolprice = blockchain.getPrice(symbol=msg.input['text'])
+        print(symbolprice)
         telegram.sendMessage(
-            f"{msg.text.upper()}/USDT : {symbolprice}", chat_id=msg.chat["id"]
+            f"{msg.input['text'].upper()}/USDT : {symbolprice}", chat_id=msg.chat["id"]
         )
 
-    except:
-        telegram.sendMessage(
-            f"Impossible de récupérer la valeure de la device {msg.text}",
-            chat_id=msg.chat["id"],
-        )

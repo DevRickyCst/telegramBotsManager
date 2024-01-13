@@ -7,11 +7,10 @@ class Gpt:
     def __init__(self) -> None:
         self.client = OpenAI(api_key=os.environ["gpt_key"])
 
-    def call_chat(self, content, instruction=None):
+    def call_chat(self, content):
         chat_completion = self.client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "user", "content": instruction},
                 {"role": "user", "content": content},
             ],
         )
