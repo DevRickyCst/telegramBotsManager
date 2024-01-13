@@ -15,9 +15,9 @@ class Bot(BotInterface):
         super().__init__(commands, bot_id)
 
     def handle_message(self, command: str, message: Message):
-        if command == self.handle_command[0]:
+        if command == self.commands[0]:
             response = gpt.call_chat(message.input["text"])
             self.telegram.sendMessage(response, chat_id=message.chat["id"])
-        elif command == self.handle_command[1]:
+        elif command == self.commands[1]:
             response = gpt.call_image(message.input["text"])
             self.telegram.sendImage(response, chat_id=message.chat["id"])

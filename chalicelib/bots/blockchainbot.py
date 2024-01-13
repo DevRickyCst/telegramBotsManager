@@ -20,5 +20,5 @@ class Bot(BotInterface):
             symbolprice = blockchain.getPrice(symbol=message.input["text"])
             self.telegram.sendMessage(
                 f"{message.input['text'].upper()}/USDT : {symbolprice}",
-                chat_id=msg.chat["id"],
+                chat_id=message.chat["id"],
             )
