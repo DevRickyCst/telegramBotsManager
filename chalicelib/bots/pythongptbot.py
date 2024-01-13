@@ -1,14 +1,11 @@
 import os
 
-from chalicelib.src.gpt import Gpt
-
-
-
-from chalicelib.src.telegram.message import Message
-import os
 from chalicelib.bots._botInterface import BotInterface
+from chalicelib.src.gpt import Gpt
+from chalicelib.src.telegram.message import Message
 
 gpt = Gpt()
+
 
 class Bot(BotInterface):
     def __init__(self):

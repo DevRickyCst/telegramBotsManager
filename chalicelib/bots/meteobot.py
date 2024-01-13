@@ -1,9 +1,11 @@
-from chalicelib.src.telegram.message import Message
-from chalicelib.src.meteo import obtenir_meteo_ville
-import os 
+import os
+
 from chalicelib.bots._botInterface import BotInterface
+from chalicelib.src.meteo import obtenir_meteo_ville
+from chalicelib.src.telegram.message import Message
 
 handle_command = ["meteo"]
+
 
 class Bot(BotInterface):
     def __init__(self):

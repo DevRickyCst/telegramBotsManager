@@ -1,7 +1,7 @@
-from chalicelib.src.telegram.telegram import TelegramInterface
-from chalicelib.src.telegram.message import Message
-
 import os
+
+from chalicelib.src.telegram.message import Message
+from chalicelib.src.telegram.telegram import TelegramInterface
 
 
 class BotInterface:

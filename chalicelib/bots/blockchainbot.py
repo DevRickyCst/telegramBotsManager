@@ -1,11 +1,11 @@
+import os
+
+from chalicelib.bots._botInterface import BotInterface
 from chalicelib.src.blockchain import BockchainInterface
 from chalicelib.src.telegram.message import Message
 from chalicelib.src.telegram.telegram import TelegramInterface
-import os
-from chalicelib.bots._botInterface import BotInterface
 
 blockchain = BockchainInterface()
-
 
 
 class Bot(BotInterface):
@@ -19,5 +19,6 @@ class Bot(BotInterface):
         if command == self.commands[0]:
             symbolprice = blockchain.getPrice(symbol=message.input["text"])
             self.telegram.sendMessage(
-                f"{message.input['text'].upper()}/USDT : {symbolprice}", chat_id=msg.chat["id"]
+                f"{message.input['text'].upper()}/USDT : {symbolprice}",
+                chat_id=msg.chat["id"],
             )
