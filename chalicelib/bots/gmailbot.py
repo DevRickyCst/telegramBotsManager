@@ -1,8 +1,8 @@
 import os
 
+from chalicelib.bots._botInterface import BotInterface
 from chalicelib.src.gmail import Gmail
 from chalicelib.src.telegram.message import Message
-from chalicelib.src.telegram.telegram import TelegramInterface
 
 gmail = Gmail()
 
