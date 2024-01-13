@@ -20,15 +20,20 @@ def bot_handler(bot_id, message):
         bot_key = os.environ[bot_id]
         telegram = TelegramInterface(bot_key)
         # Get command
-        command = message.input['command']
+        command = message.input["command"]
         # Check if bot handle this command or not
         if command in module_name.handle_command:
             try:
                 module_name.handle_message(command, message, telegram)
             except:
-                telegram.sendMessage(f'Fail to execute command {command}', message.chat["id"])
+                telegram.sendMessage(
+                    f"Fail to execute command {command}", message.chat["id"]
+                )
         else:
-            telegram.sendMessage(f'No handler found for command /{command}\nAvailable commands are {module_name.handle_command}', message.chat["id"])
+            telegram.sendMessage(
+                f"No handler found for command /{command}\nAvailable commands are {module_name.handle_command}",
+                message.chat["id"],
+            )
 
     except FileNotFoundError:
         print(f"No handler found for {bot_id}")
@@ -41,7 +46,7 @@ def webhook_index(bot_id):
     message = Message(params)
 
     # If user send a command
-    if message.input['isCommand']:
+    if message.input["isCommand"]:
         print(f"Bot {bot_id} called by {message.user['username']}")
         print(f"with params : {message}")
 

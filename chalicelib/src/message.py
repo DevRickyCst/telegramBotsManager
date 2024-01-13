@@ -1,5 +1,6 @@
 import re
 
+
 class Message:
     """
     A class representing a Message.
@@ -18,12 +19,15 @@ class Message:
         self.input = self.get_input_from_request(json_body)
 
     def __str__(self):
-        return str({
-            'user': self.user,
-            'chat': self.chat,
-            'date': self.date,
-            'input': self.input
-        })
+        return str(
+            {
+                "user": self.user,
+                "chat": self.chat,
+                "date": self.date,
+                "input": self.input,
+            }
+        )
+
     @staticmethod
     def get_user_from_request(json_body: dict):
         user = json_body["message"]["from"]
@@ -55,14 +59,10 @@ class Message:
         command = None
         text = json_body["message"]["text"]
         # Use regex to check if a command was passed
-        regex_command = re.search(r'/(\w+)', text)
+        regex_command = re.search(r"/(\w+)", text)
         if regex_command:
             isCommand = True
             command = regex_command.group(1)
             # Delete command from texte
-            text = re.sub(fr'/{re.escape(command)}\s*','',text)
-        return {
-            'isCommand': isCommand,
-            'command': command,
-            'text': text
-        }
+            text = re.sub(rf"/{re.escape(command)}\s*", "", text)
+        return {"isCommand": isCommand, "command": command, "text": text}

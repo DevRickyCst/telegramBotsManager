@@ -4,15 +4,13 @@ from chalicelib.src.telegram import TelegramInterface
 
 blockchain = BockchainInterface()
 
-handle_command = [
-    'getPrice'
-]
+handle_command = ["getPrice"]
+
 
 def handle_message(command: str, msg: Message, telegram: TelegramInterface):
     if command == handle_command[0]:
-        symbolprice = blockchain.getPrice(symbol=msg.input['text'])
+        symbolprice = blockchain.getPrice(symbol=msg.input["text"])
         print(symbolprice)
         telegram.sendMessage(
             f"{msg.input['text'].upper()}/USDT : {symbolprice}", chat_id=msg.chat["id"]
         )
-

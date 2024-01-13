@@ -13,11 +13,13 @@ class BockchainInterface:
 
     def getPrice(self, symbol: str = "BTC", device: str = "USDT"):
         symbol = symbol.upper().replace(" ", "")
-        url = (self.coin_market_cap_url
-        + f"v2/cryptocurrency/quotes/latest?symbol={symbol},device")
+        url = (
+            self.coin_market_cap_url
+            + f"v2/cryptocurrency/quotes/latest?symbol={symbol},device"
+        )
 
         response = requests.get(url, headers=self.coin_market_cap_url_header).json()
 
         price = response["data"][symbol][0]["quote"]["USD"]["price"]
-        
+
         return str(round(price, 2)) + "$"
