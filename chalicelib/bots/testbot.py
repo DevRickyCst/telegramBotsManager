@@ -1,10 +1,18 @@
-from chalicelib.src.message import Message
-from chalicelib.src.telegram import TelegramInterface
+import os
 
-handle_command = ["test", "test2"]
+from chalicelib.bots._botInterface import BotInterface
+from chalicelib.src.telegram.message import Message
+from chalicelib.src.telegram.telegram import TelegramInterface
 
 
-def handle_message(msg: Message, telegram: TelegramInterface):
-    # telegram.sendMessage(msg.text, msg.chat["id"])
-    print("ok")
-    return 0
+class Bot(BotInterface):
+    def __init__(self):
+        commands = ["test", "test2"]
+        bot_id = os.path.splitext(os.path.basename(__file__))[0]
+
+        super().__init__(commands, bot_id)
+
+    def handle_message(self, command: str, message: Message):
+        print(command)
+        print("ok")
+        return 0

@@ -1,14 +1,10 @@
-import os
 from importlib import import_module
 
 from chalice import Chalice, Response
 
-from chalicelib.bots.botsmanager.blueprint import app_bots_manager
-from chalicelib.src.message import Message
-from chalicelib.src.telegram import TelegramInterface
+from chalicelib.src.telegram.message import Message
 
 app = Chalice(app_name="telegramBots")
-app.register_blueprint(app_bots_manager)
 
 
 def bot_handler(bot_id, message):
@@ -16,24 +12,16 @@ def bot_handler(bot_id, message):
     try:
         # Import Bot
         module_name = import_module(f"chalicelib.bots.{bot_id}")
-        # Initialise telegram bot object
-        bot_key = os.environ[bot_id]
-        telegram = TelegramInterface(bot_key)
+        # Initialise bot object
+        bot = module_name.Bot()
+
         # Get command
         command = message.input["command"]
+        if command == "help":
+            bot.describe_commands(chat_id=message.chat["id"])
         # Check if bot handle this command or not
-        if command in module_name.handle_command:
-            try:
-                module_name.handle_message(command, message, telegram)
-            except:
-                telegram.sendMessage(
-                    f"Fail to execute command {command}", message.chat["id"]
-                )
         else:
-            telegram.sendMessage(
-                f"No handler found for command /{command}\nAvailable commands are {module_name.handle_command}",
-                message.chat["id"],
-            )
+            bot.handle_message(command, message)
 
     except FileNotFoundError:
         print(f"No handler found for {bot_id}")
