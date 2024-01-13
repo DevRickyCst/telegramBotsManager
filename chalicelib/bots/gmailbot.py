@@ -1,13 +1,18 @@
 from chalicelib.src.gmail import Gmail
-from chalicelib.src.message import Message
-from chalicelib.src.telegram import TelegramInterface
-
+from chalicelib.src.telegram.message import Message
+from chalicelib.src.telegram.telegram import TelegramInterface
+import os
 gmail = Gmail()
 
-handle_command = ["sendMail"]
 
+class Bot(BotInterface):
+    def __init__(self):
+        commands = ["sendMail"]
+        bot_id = os.path.splitext(os.path.basename(__file__))[0]
 
-def handle_message(command: str, msg: Message, telegram: TelegramInterface):
-    if command == "sendMail":
-        if msg.user["id"] == 426680033:
-            gmail.send_email("hello", msg.input["text"], "dev.creusot.aym@gmail.com")
+        super().__init__(commands, bot_id)
+
+    def handle_message(self, command: str, message: Message):
+        if command == self.handle_command[0]:
+            if message.user["id"] == 426680033:
+                gmail.send_email("hello", message.input["text"], "dev.creusot.aym@gmail.com")

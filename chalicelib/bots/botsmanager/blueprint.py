@@ -2,7 +2,7 @@ import os
 
 from chalice import Blueprint
 
-from chalicelib.src.telegram import TelegramInterface
+from chalicelib.src.telegram.telegram import TelegramInterface
 
 bot_name = "botsmanager"
 
