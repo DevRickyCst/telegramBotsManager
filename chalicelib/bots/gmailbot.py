@@ -15,7 +15,7 @@ class Bot(BotInterface):
         super().__init__(commands, bot_id)
 
     def handle_message(self, command: str, message: Message):
-        if command == self.handle_command[0]:
+        if command == self.commands[0]:
             if message.user["id"] == 426680033:
                 gmail.send_email(
                     "hello", message.input["text"], "dev.creusot.aym@gmail.com"
