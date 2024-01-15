@@ -21,13 +21,13 @@ def bot_handler(bot_id, message):
             bot.describe_commands(chat_id=message.chat["id"])
         # Check if bot handle this command or not
         else:
-            bot.handle_message(command, message)
+            bot.handle_message_command_checker(command, message)
 
     except FileNotFoundError:
         print(f"No handler found for {bot_id}")
 
 
-@app.route("/{bot_id}", methods=["POST", "GET"])
+@app.route("/{bot_id}", methods=["POST"])
 def webhook_index(bot_id):
     # Get input params
     params = app.current_request.json_body
@@ -41,3 +41,8 @@ def webhook_index(bot_id):
         bot_handler(bot_id, message)
 
     return Response({"ok": True})
+
+
+@app.route("/", methods=["GET"])
+def index():
+    return 'Hello World'
