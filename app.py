@@ -23,7 +23,7 @@ def bot_handler(bot_id, message):
         else:
             bot.handle_message_command_checker(command, message)
 
-    except FileNotFoundError:
+    except ModuleNotFoundError:
         print(f"No handler found for {bot_id}")
 
 
@@ -41,6 +41,23 @@ def webhook_index(bot_id):
         bot_handler(bot_id, message)
 
     return Response({"ok": True})
+
+
+@app.route("/{bot_id}/send_message", methods=["POST"])
+def send_message(bot_id):
+    text = app.current_request.json_body["text"]
+    print(f'Resquest made to {bot_id} to path /send_message')
+
+
+    try:
+        # Import Bot
+        module_name = import_module(f"chalicelib.bots.{bot_id}")
+        # Initialise bot object
+        bot = module_name.Bot()
+        bot.telegram.sendMessage(text,'426680033')
+    except ModuleNotFoundError:
+        print(f"{bot_id} isn't configured")
+
 
 
 @app.route("/", methods=["GET"])

@@ -20,7 +20,7 @@ class BotInterface:
             self.telegram.sendMessage(not_in_commands_str, chat_id=message.chat["id"])
         else:
             try:
-                self.handle_message(self, command, message)
+                self.handle_message(command, message)
             except Exception as e:
                 self.telegram.sendMessage(e, chat_id=message.chat["id"])
 
@@ -33,7 +33,7 @@ class BotInterface:
                           + self._describe_commands(chat_id, False))
         self.telegram.sendMessage(welcom_message, chat_id=chat_id)
 
-    def describe_commands(self, chat_id: str, send: bool):
+    def describe_commands(self, chat_id: str, send: bool = True):
         desciption = "List of Available commands :\n"
         for command in self.commands:
             desciption += f"- /{command}\n"
