@@ -45,16 +45,18 @@ def webhook_index(bot_id):
 
 @app.route("/{bot_id}/send_message", methods=["POST"])
 def send_message(bot_id):
-    text = app.current_request.json_body["text"]
+    params = app.current_request.json_body
     print(f'Resquest made to {bot_id} to path /send_message')
 
+    text = params['texte']
+    chat_id = params['chat_id']
 
     try:
         # Import Bot
         module_name = import_module(f"chalicelib.bots.{bot_id}")
         # Initialise bot object
         bot = module_name.Bot()
-        bot.telegram.sendMessage(text,'426680033')
+        bot.telegram.sendMessage(text,chat_id)
     except ModuleNotFoundError:
         print(f"{bot_id} isn't configured")
 

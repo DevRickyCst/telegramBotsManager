@@ -35,7 +35,7 @@ class Message:
             "id": user["id"],
             "is_bot": user["is_bot"],
             "first_name": user["first_name"],
-            "username": user["username"],
+            "username": user.get("username"),
             "language_code": user["language_code"],
         }
 
