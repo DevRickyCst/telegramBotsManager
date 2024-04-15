@@ -8,14 +8,17 @@ gmail = Gmail()
 
 
 class Bot(BotInterface):
+
+    class Commands(BotInterface.Commands):
+        SEND_MAIL = "sendMail"
+
     def __init__(self):
-        commands = ["sendMail"]
         bot_id = os.path.splitext(os.path.basename(__file__))[0]
 
-        super().__init__(commands, bot_id)
+        super().__init__(bot_id)
 
     def handle_message(self, command: str, message: Message):
-        if command == self.commands[0]:
+        if command == self.Commands.SEND_MAIL:
             if message.user["id"] == 426680033:
                 gmail.send_email(
                     "hello", message.input["text"], "dev.creusot.aym@gmail.com"
