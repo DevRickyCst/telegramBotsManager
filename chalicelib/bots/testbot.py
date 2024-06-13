@@ -5,7 +5,8 @@ from chalicelib.src.telegram.message import Message
 
 
 def test(message: Message):
-    return('coucou')
+    return "coucou"
+
 
 class Bot(BotInterface):
 

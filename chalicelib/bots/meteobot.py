@@ -4,9 +4,9 @@ from chalicelib.bots._botInterface import BotInterface
 from chalicelib.src.meteo import obtenir_meteo_ville
 from chalicelib.src.telegram.message import Message
 
+
 def get_meteo(message: Message):
     return obtenir_meteo_ville(message.input["text"])
-
 
 
 class Bot(BotInterface):

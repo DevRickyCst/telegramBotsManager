@@ -1,6 +1,7 @@
-from importlib import import_module
 import glob
 import os
+from importlib import import_module
+
 import requests
 from chalice import Chalice
 
@@ -10,10 +11,10 @@ app = Chalice(app_name="telegramBots")
 
 
 def bot_handler(bot_id: str, message: Message):
-    ''' Check if bot exist, 
-        import bot
-        Ask the bot to process the message    
-    '''
+    """Check if bot exist,
+    import bot
+    Ask the bot to process the message
+    """
     try:
         # Import Bot
         module_name = import_module(f"chalicelib.bots.{bot_id}")
@@ -48,22 +49,22 @@ def webhook_index(bot_id):
         bot_handler(bot_id, message)
     else:
         print("No command was sent.")
-    # Anyway return ok to telegram bot  
-    return {'statusCode': 200}
-
+    # Anyway return ok to telegram bot
+    return {"statusCode": 200}
 
 
 # Specific endpoint to interact with a bot.
 
+
 @app.route("/{bot_id}/send_message", methods=["POST"])
 def send_message(bot_id):
-    '''Send a message from a bot'''
+    """Send a message from a bot"""
 
     params = app.current_request.json_body
-    print(f'Resquest made to {bot_id} to path /send_message')
+    print(f"Resquest made to {bot_id} to path /send_message")
 
-    text = params['texte']
-    chat_id = params['chat_id']
+    text = params["texte"]
+    chat_id = params["chat_id"]
 
     # Try to send the message from the bot
     try:
@@ -71,15 +72,14 @@ def send_message(bot_id):
         module_name = import_module(f"chalicelib.bots.{bot_id}")
         # Initialise bot object
         bot = module_name.Bot()
-        bot.telegram.sendMessage(text,chat_id)
+        bot.telegram.sendMessage(text, chat_id)
     except ModuleNotFoundError:
         print(f"{bot_id} isn't configured")
 
 
-
 @app.route("/", methods=["GET"])
 def index():
-    return 'Hello World'
+    return "Hello World"
 
 
 # Chemin du dossier à explorer
@@ -93,6 +93,7 @@ print(list_path)
 list_bot = [os.path.splitext(os.path.basename(fichier))[0] for fichier in list_path]
 print(list_bot)
 
+
 def setWebhook(extra_url: str, _bot_id: str):
     # Force url since self.url isn't the one used
     url = f"https://api.telegram.org/bot{_bot_id}/setWebhook"
@@ -104,9 +105,9 @@ def setWebhook(extra_url: str, _bot_id: str):
     print(payload)
     return "ok"
 
-@app.route('/set-webhooks', methods=['POST'])
+
+@app.route("/set-webhooks", methods=["POST"])
 def set_webhooks():
     for bot_name in list_bot:
         setWebhook(bot_name, os.environ[bot_name])
     return {"status": "webhooks set"}
-
