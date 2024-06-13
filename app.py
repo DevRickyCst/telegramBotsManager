@@ -24,7 +24,7 @@ def bot_handler(bot_id: str, message: Message):
             bot.describe_commands(chat_id=message.chat["id"])
         # Check if bot handle this command or not
         else:
-            bot.handle_message_command_checker(command, message)
+            bot.handle_message(command, message)
 
     except ModuleNotFoundError:
         print(f"No handler found for {bot_id}")

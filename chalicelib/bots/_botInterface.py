@@ -30,7 +30,6 @@ class BotInterface:
         Args:
             bot_id (str): The ID of the bot.
         """
-        bot_id = os.path.splitext(os.path.basename(__file__))[0]
         bot_key = os.getenv(bot_id)
         self.commands = self.Commands.get_commands()
         self.bot_name = bot_id
@@ -39,21 +38,22 @@ class BotInterface:
     def __str__(self) -> str:
         return(f"Bot : {self.bot_name}")
 
-    def handle_message_command_checker(self, command: str, message: Message):
-        if command not in self.commands:
-            not_in_commands_str = "Cette comande n'est pas gérer. Tapez /help pour plus d'information."
-            self.telegram.sendMessage(not_in_commands_str, chat_id=message.chat["id"])
-        else:
-            print(f"Command /{command} accepted for bot {self.bot_name}")
-            try:
-                # match Commands key from commands send by the user 
+    def command_checker(fonction):
+        def command_handler(self, command, message):
+            try: 
+                # Get bot command object from user input command
                 command_object = self.Commands.get_command_from_value(command)
-
-                self.handle_message(command_object, message)
-            except Exception as e:
+                # Aply handler to the command
+                fonction(self, command_object, message)
+            except ValueError as e:
+                # 
+                not_in_commands_str = "Cette comande n'est pas gérer. Tapez /help pour plus d'information."
+                self.telegram.sendMessage(not_in_commands_str, chat_id=message.chat["id"])
+            except BaseException as e:
                 self.telegram.sendMessage(str(e), chat_id=message.chat["id"])
+        return command_handler
 
-
+    @command_checker
     def handle_message(self, command: Commands, message: Message):
         """Handle the message based on the command.
 
@@ -63,14 +63,11 @@ class BotInterface:
         """
         handler_function = command.value[1]
         value = handler_function(message)
-        print(value)
-        try:
-            self.telegram.sendMessage(
-                    value,
-                    chat_id=message.chat["id"],
-                )
-        except:
-            print('fail')
+        self.telegram.sendMessage(
+                value,
+                chat_id=message.chat["id"],
+            )
+
 
     def welcome(self, chat_id: str):
         welcome_message = (f"Welcome to {self.bot_name} !\n"

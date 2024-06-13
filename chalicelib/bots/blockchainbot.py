@@ -12,6 +12,7 @@ def get_price(message: Message):
         return (f"{message.input['text'].upper()}/USDT : {symbolprice}")
     except BaseException as e:
         return(f"Check the symbol you asked for.")
+    
 class Bot(BotInterface):
 
     class Commands(BotInterface.Commands):

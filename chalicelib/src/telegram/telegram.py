@@ -8,6 +8,7 @@ class TelegramInterface:
     def sendMessage(self, text: str, chat_id: str):
         extra_url = "/sendMessage"
         payload = {"chat_id": chat_id, "text": text}
+        print(self.url + extra_url)
         return requests.post(self.url + extra_url, data=payload)
 
     def sendImage(self, text: str, chat_id: str):
