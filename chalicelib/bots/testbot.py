@@ -2,17 +2,17 @@ import os
 
 from chalicelib.bots._botInterface import BotInterface
 from chalicelib.src.telegram.message import Message
-from chalicelib.src.telegram.telegram import TelegramInterface
+
+
+def test(message: Message):
+    return "coucou"
 
 
 class Bot(BotInterface):
+
+    class Commands(BotInterface.Commands):
+        GET_TOKEN_PRICE = ("test", test)
+
     def __init__(self):
-        commands = ["test", "test2"]
         bot_id = os.path.splitext(os.path.basename(__file__))[0]
-
-        super().__init__(commands, bot_id)
-
-    def handle_message(self, command: str, message: Message):
-        print(command)
-        print("ok")
-        return 0
+        super().__init__(bot_id)

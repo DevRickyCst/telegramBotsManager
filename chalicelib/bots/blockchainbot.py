@@ -3,22 +3,24 @@ import os
 from chalicelib.bots._botInterface import BotInterface
 from chalicelib.src.blockchain import BockchainInterface
 from chalicelib.src.telegram.message import Message
-from chalicelib.src.telegram.telegram import TelegramInterface
 
 blockchain = BockchainInterface()
 
 
+def get_price(message: Message):
+    try:
+        symbolprice = blockchain.getPrice(symbol=message.input["text"])
+        return f"{message.input['text'].upper()}/USDT : {symbolprice}"
+    except BaseException as e:
+        return f"Check the symbol you asked for."
+
+
 class Bot(BotInterface):
+
+    class Commands(BotInterface.Commands):
+        GET_TOKEN_PRICE = ("getPrice", get_price)
+        GET_TOKEN_PRICE2 = ("getPrice2", get_price)
+
     def __init__(self):
-        commands = ["getPrice"]
         bot_id = os.path.splitext(os.path.basename(__file__))[0]
-
-        super().__init__(commands, bot_id)
-
-    def handle_message(self, command: str, message: Message):
-        if command == self.commands[0]:
-            symbolprice = blockchain.getPrice(symbol=message.input["text"])
-            self.telegram.sendMessage(
-                f"{message.input['text'].upper()}/USDT : {symbolprice}",
-                chat_id=message.chat["id"],
-            )
+        super().__init__(bot_id)

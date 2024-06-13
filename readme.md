@@ -16,7 +16,7 @@ This repository contains a Python script for handling Telegram bots using the Ch
 ## Usage
 1. Define your Telegram bots under the `chalicelib/bots` directory.
 2. Each bot should be implemented as a separate Python module with a class named `Bot`.
-3. Implement bot functionalities within the `Bot` class.
+3. Implement bot functionalities within the `Bot` class, inheriting from the `BotInterface` interface.
 4. Start the Chalice server using `chalice local`.
 5. Configure your Telegram bot webhook to point to your Chalice server.
 
