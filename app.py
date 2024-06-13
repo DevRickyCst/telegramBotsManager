@@ -1,5 +1,7 @@
 from importlib import import_module
-
+import glob
+import os
+import requests
 from chalice import Chalice
 
 from chalicelib.src.telegram.message import Message
@@ -78,3 +80,33 @@ def send_message(bot_id):
 @app.route("/", methods=["GET"])
 def index():
     return 'Hello World'
+
+
+# Chemin du dossier à explorer
+bots_folder = "chalicelib/bots"
+
+# Get a list of all path
+list_path = glob.glob(bots_folder + "/*bot.py")
+print(list_path)
+
+# Get only the file name
+list_bot = [os.path.splitext(os.path.basename(fichier))[0] for fichier in list_path]
+print(list_bot)
+
+def setWebhook(extra_url: str, _bot_id: str):
+    # Force url since self.url isn't the one used
+    url = f"https://api.telegram.org/bot{_bot_id}/setWebhook"
+    webhook_url = "https://ia6orftg8f.execute-api.eu-central-1.amazonaws.com/api/"
+    payload = {"url": webhook_url + extra_url}
+    print(f"Setting Webhook for {_bot_id} to {url}")
+
+    response = requests.get(url, data=payload)
+    print(payload)
+    return "ok"
+
+@app.route('/set-webhooks', methods=['POST'])
+def set_webhooks():
+    for bot_name in list_bot:
+        setWebhook(bot_name, os.environ[bot_name])
+    return {"status": "webhooks set"}
+
