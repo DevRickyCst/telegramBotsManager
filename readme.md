@@ -1,34 +1,79 @@
-# Telegram Bot Handler with Chalice
 
-This repository contains a Python script for handling Telegram bots using the Chalice framework. The script allows you to create and manage multiple Telegram bots effortlessly.
-
-## Prerequisites
-- Python 3.x
-- Chalice framework
-- Access to the Telegram Bot API
 
 ## Installation
-1. Clone this repository to your local machine.
-2. Install dependencies using `pip install -r requirements.txt`.
-3. Configure your Telegram bot(s) and obtain API tokens.
-4. Set up your Chalice environment.
+1. Create a virtual venv:
 
-## Usage
-1. Define your Telegram bots under the `chalicelib/bots` directory.
-2. Each bot should be implemented as a separate Python module with a class named `Bot`.
-3. Implement bot functionalities within the `Bot` class, inheriting from the `BotInterface` interface.
-4. Start the Chalice server using `chalice local`.
-5. Configure your Telegram bot webhook to point to your Chalice server.
+     `python3 -m venv venv` (or with pyenv)
 
-## How It Works
-- The `webhook_index` function serves as the entry point for handling incoming webhook requests from Telegram.
-- When a message is received, it's processed by the `bot_handler` function, which dynamically imports the appropriate bot module based on the `bot_id`.
-- The bot module is expected to have a `Bot` class with methods to handle different commands and messages.
-- Incoming messages are routed to the corresponding bot's `handle_message_command_checker` method for processing.
-- The `send_message` endpoint allows sending messages through a specific bot identified by `bot_id` and specified parameters.
-- Other endpoints are provided for general functionality and testing.
+2. Install dependencies :
 
-## Contributing
-Contributions are welcome! If you find any issues or have suggestions for improvements, feel free to open an issue or create a pull request.
+     `pip install -r requirements.txt`.
 
+3. Configure your AWS crendetials in `~/.aws/credentials`
+
+    https://docs.aws.amazon.com/cli/v1/userguide/cli-chap-configure.html 
+
+4. You can now run your webhook application with: 
+
+    `make local`
+
+
+## Setting a telegram bot
+
+
+1. Create your Telegram bot(s) and obtain your API tokens.
+    
+    https://core.telegram.org/bots#how-do-i-create-a-bot
+    
+
+2. Set up your Chalice environment variable such as :
+
+          "environment_variables":{
+                "myfirstbot": "bot_api_token_1",
+                "mysecondbot": "bot_api_token_2"
+             }
+
+    https://aws.github.io/chalice/topics/configfile#environment-variables
+
+3. In the folder `chalicelib/bots`, create a python file named as you telegrambot (Ex : myfirstbot.py)
+
+4. Each bot should be implemented as a separate Python module with a class named Bot.
+
+    Such as : 
+    ```python 
+    def get_meteo(message: Message):
+        return obtenir_meteo_ville(message.input["text"])
+
+    COMMANDS = [Command("meteo", get_meteo)]
+
+    class Bot(BotInterface):
+
+        def __init__(self):
+            bot_id = os.path.splitext(os.path.basename(__file__))[0]
+            super().__init__(bot_id, COMMANDS)
+    ```
+
+
+## Project Structure
+
+```plaintext
+telegramBots/
+├── app.py                     # Main application file
+├── chalicelib/
+│   ├── bots/                  # Folder for bot implementations
+│   │   └── myfirstbot.py      # Example bot implementation
+│   └── src/
+│       ├── bot/
+│       │   └── _botInterface.py # Bot interface definition
+│       ├── telegram/
+│       │   ├── message.py     # Message handling classes
+│       │   └── telegram.py    # Telegram interaction classes
+│       └── gmail.py           # Example additional service
+├── requirements.txt           # Project dependencies
+└── .chalice/
+    └── config.json            # Chalice configuration
+```
 ## License
+
+This project is licensed under the MIT License.
+
