@@ -21,5 +21,4 @@ class BockchainInterface:
         response = requests.get(url, headers=self.coin_market_cap_url_header).json()
 
         price = response["data"][symbol][0]["quote"]["USD"]["price"]
-
         return str(round(price, 2)) + "$"
