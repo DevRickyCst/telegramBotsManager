@@ -9,7 +9,7 @@ SCHEDULED_TASKS = [
         "chat_id": "646579882",  # Chat ID à envoyer
         "text": "C'est l'heure de boire de l'eau !",  # Message
         "schedule": Cron(
-            0, "8-16/2", "*", "*", "?", "*"
+            0, "12,16", "*", "*", "?", "*"
         ),  # Toutes les 2 heures entre 8h et 16h
     },
     # Ajoutez d'autres tâches ici
