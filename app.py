@@ -1,80 +1,54 @@
-import glob
-import os
-from importlib import import_module
-
-import requests
 from chalice import Chalice
 
+from chalicelib.bots import get_bot
+from chalicelib.bots.bot import AdvancedBot, BaseBot
+from chalicelib.schedules.task import register_schedules
 from chalicelib.src.telegram.message import Message
+from chalicelib.utils.webhook_manager import WebhookManager
 
 app = Chalice(app_name="telegramBots")
 
+register_schedules(app)
 
-def bot_handler(bot_id: str, message: Message):
-    """Check if bot exist,
-    import bot
-    Ask the bot to process the message
-    """
-    try:
-        # Import Bot
-        module_name = import_module(f"chalicelib.bots.{bot_id}")
-        # Initialise bot object
-        bot = module_name.Bot()
-
-        # Get command
-        command = message.input["command"]
-        if command == "help":
-            bot.describe_commands(chat_id=message.chat["id"])
-        # Check if bot handle this command or not
-        else:
-            bot.handle_message(command, message)
-
-    except ModuleNotFoundError:
-        print(f"No handler found for {bot_id}")
+webhook_manager = WebhookManager(
+    "https://ia6orftg8f.execute-api.eu-central-1.amazonaws.com/api"
+)
 
 
-# Webhook endpoint (ex: /myfirstbot, for the bot myfirstbot)
 @app.route("/{bot_id}", methods=["POST"])
 def webhook_index(bot_id):
-    # Get params sent by telegram
+    """Handle the webhook call from Telegram for a specific bot."""
+    # Get params sent by Telegram
     params = app.current_request.json_body
     # Create message object
     message = Message(params)
 
-    # If user send a command
+    # If the user sends a command
     if message.input["isCommand"]:
         print(f"Bot {bot_id} called by {message.user['username']}")
-        print(f"with params : {message}")
+        print(f"with params: {message}")
 
-        bot_handler(bot_id, message)
+        bot = get_bot(bot_id=bot_id)
+
+        bot.handle_message(message)
     else:
         print("No command was sent.")
-    # Anyway return ok to telegram bot
+    # Always return ok to Telegram bot
     return {"statusCode": 200}
-
-
-# Specific endpoint to interact with a bot.
 
 
 @app.route("/{bot_id}/send_message", methods=["POST"])
 def send_message(bot_id):
-    """Send a message from a bot"""
-
+    """Send a message from a bot to a specific chat."""
     params = app.current_request.json_body
-    print(f"Resquest made to {bot_id} to path /send_message")
+    print(f"Request made to {bot_id} to path /send_message")
 
     text = params["texte"]
     chat_id = params["chat_id"]
 
-    # Try to send the message from the bot
-    try:
-        # Import Bot
-        module_name = import_module(f"chalicelib.bots.{bot_id}")
-        # Initialise bot object
-        bot = module_name.Bot()
-        bot.telegram.sendMessage(text, chat_id)
-    except ModuleNotFoundError:
-        print(f"{bot_id} isn't configured")
+    bot = get_bot(bot_id=bot_id)
+
+    bot.telegram.sendMessage(text=text, chat_id=chat_id)
 
 
 @app.route("/", methods=["GET"])
@@ -82,32 +56,9 @@ def index():
     return "Hello World"
 
 
-# Chemin du dossier à explorer
-bots_folder = "chalicelib/bots"
-
-# Get a list of all path
-list_path = glob.glob(bots_folder + "/*bot.py")
-print(list_path)
-
-# Get only the file name
-list_bot = [os.path.splitext(os.path.basename(fichier))[0] for fichier in list_path]
-print(list_bot)
-
-
-def setWebhook(extra_url: str, _bot_id: str):
-    # Force url since self.url isn't the one used
-    url = f"https://api.telegram.org/bot{_bot_id}/setWebhook"
-    webhook_url = "https://ia6orftg8f.execute-api.eu-central-1.amazonaws.com/api/"
-    payload = {"url": webhook_url + extra_url}
-    print(f"Setting Webhook for {_bot_id} to {url}")
-
-    response = requests.get(url, data=payload)
-    print(payload)
-    return "ok"
-
-
 @app.route("/set-webhooks", methods=["POST"])
 def set_webhooks():
-    for bot_name in list_bot:
-        setWebhook(bot_name, os.environ[bot_name])
-    return {"status": "webhooks set"}
+    """Configure webhooks for all bots."""
+    bots_folder = "chalicelib/bots"
+    results = webhook_manager.set_webhooks_for_all(bots_folder)
+    return {"status": "Webhooks configured", "results": results}
