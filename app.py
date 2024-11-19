@@ -1,14 +1,12 @@
-from chalice import Chalice
+from chalice import Chalice, Cron
 
 from chalicelib.bots import get_bot
-from chalicelib.bots.bot import AdvancedBot, BaseBot
-from chalicelib.schedules.task import register_schedules
+from chalicelib.schedules.task import send_scheduled_message
 from chalicelib.src.telegram.message import Message
 from chalicelib.utils.webhook_manager import WebhookManager
 
 app = Chalice(app_name="telegramBots")
 
-register_schedules(app)
 
 webhook_manager = WebhookManager(
     "https://ia6orftg8f.execute-api.eu-central-1.amazonaws.com/api"
@@ -62,3 +60,15 @@ def set_webhooks():
     bots_folder = "chalicelib/bots"
     results = webhook_manager.set_webhooks_for_all(bots_folder)
     return {"status": "Webhooks configured", "results": results}
+
+
+# Define a function for each scheduled task
+@app.schedule(
+    Cron(0, "8-16/2", "*", "*", "?", "*")
+)  # Every 2 hours between 8 AM and 4 PM
+def alertewaterbot_schedule(event):
+    send_scheduled_message(
+        bot_id="alertewaterbot",
+        chat_id="646579882",
+        text="C'est l'heure de boire de l'eau !",
+    )
