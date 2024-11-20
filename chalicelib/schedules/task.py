@@ -1,7 +1,7 @@
 from chalicelib.bots.telegram import get_bot
 
 
-def send_scheduled_message(bot_id, chat_id, text):
+def send_scheduled_message(bot_id, text):
     """Send a message via the bot."""
     try:
         # Get the bot instance
@@ -11,7 +11,6 @@ def send_scheduled_message(bot_id, chat_id, text):
             return
 
         # Send the message
-        bot_instance.telegram.sendMessage(text=text, chat_id=chat_id)
-        print(f"Message sent by {bot_id} to {chat_id}: {text}")
+        bot_instance.sendMessage(text=text)
     except Exception as e:
         print(f"Error sending scheduled message for {bot_id}: {e}")
