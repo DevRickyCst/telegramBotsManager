@@ -63,7 +63,7 @@ def set_webhooks():
 
 # Define a function for each scheduled task
 @app.schedule(
-    Cron(0, "12,16", "*", "*", "?", "*")
+    Cron(1, "12,16", "*", "*", "?", "*")
 )  # Every 2 hours between 8 AM and 4 PM
 def alertewaterbot_schedule(event):
     send_scheduled_message(
