@@ -1,6 +1,6 @@
 from typing import Optional
 
-from chalicelib.bots.bot import AdvancedBot, BaseBot
+from chalicelib.bots.bot import TelegramBot
 from chalicelib.src.blockchain import BockchainInterface
 from chalicelib.src.gmail import Gmail
 from chalicelib.src.gpt import Gpt
@@ -43,41 +43,39 @@ def call_gpt(message: Message):
 # Bot Configuration
 BOT_CONFIG = {
     "blockchainbot": {
-        "type": AdvancedBot,
+        "type": TelegramBot,
         "commands": [
             {"command": "getPrice", "handler": get_price},
         ],
     },
     "gmailbot": {
-        "type": AdvancedBot,
+        "type": TelegramBot,
         "commands": [
             {"command": "sendMail", "handler": send_mail},
         ],
     },
     "meteobot": {
-        "type": AdvancedBot,
+        "type": TelegramBot,
         "commands": [
             {"command": "meteo", "handler": get_meteo},
         ],
     },
     "pythongptbot": {
-        "type": AdvancedBot,
+        "type": TelegramBot,
         "commands": [
             {"command": "chatgpt", "handler": call_gpt},
         ],
     },
     "airflowrickybot": {
-        "type": BaseBot,
-        "commands": [],
+        "type": TelegramBot,
     },
     "alertewaterbot": {
-        "type": BaseBot,
-        "commands": [],
+        "type": TelegramBot,
     },
 }
 
 
-def get_bot(bot_id: str) -> Optional[BaseBot]:
+def get_bot(bot_id: str) -> Optional[TelegramBot]:
     """
     Retourne une instance de bot configurée en fonction de l'identifiant fourni.
 
@@ -90,10 +88,10 @@ def get_bot(bot_id: str) -> Optional[BaseBot]:
             raise ValueError(f"No configuration found for bot_id: {bot_id}")
 
         bot_type = bot_config["type"]
-        commands = bot_config.get("commands", [])
+        commands = bot_config.get("commands", None)
 
         # Créer l'instance du bot avec ses commandes
-        bot_instance: BaseBot = bot_type(bot_id=bot_id, commands=commands)
+        bot_instance: TelegramBot = bot_type(bot_id=bot_id, commands=commands)
         return bot_instance
 
     except Exception as e:

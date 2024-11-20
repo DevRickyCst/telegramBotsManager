@@ -1,0 +1,25 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+      {
+          "Effect": "Allow",
+          "Action": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents"
+          ],
+          "Resource": "arn:*:logs:*:*:*"
+      },
+      {
+          "Sid": "Statement1",
+          "Effect": "Allow",
+          "Action": [
+              "secretsmanager:GetSecretValue"
+          ],
+          "Resource": [
+              "arn:aws:secretsmanager:eu-central-1:859456618518:secret:api_keys-NIsUEF",
+              "arn:aws:secretsmanager:eu-central-1:859456618518:secret:telegrams_bots-gxuTxa"
+          ]
+      }
+  ]
+}

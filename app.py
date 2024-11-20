@@ -9,7 +9,7 @@ app = Chalice(app_name="telegramBots")
 
 
 webhook_manager = WebhookManager(
-    "https://ia6orftg8f.execute-api.eu-central-1.amazonaws.com/api"
+    "https://6sm86mr5n3.execute-api.eu-central-1.amazonaws.com/api/"
 )
 
 
@@ -57,8 +57,7 @@ def index():
 @app.route("/set-webhooks", methods=["POST"])
 def set_webhooks():
     """Configure webhooks for all bots."""
-    bots_folder = "chalicelib/bots"
-    results = webhook_manager.set_webhooks_for_all(bots_folder)
+    results = webhook_manager.set_webhooks_for_all()
     return {"status": "Webhooks configured", "results": results}
 
 

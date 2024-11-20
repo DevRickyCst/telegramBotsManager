@@ -2,7 +2,8 @@ import glob
 import os
 
 import requests
-
+from chalicelib.bots import BOT_CONFIG
+from chalicelib.utils.secret import get_secret
 
 class WebhookManager:
     def __init__(self, base_url: str):
@@ -11,7 +12,7 @@ class WebhookManager:
     def set_webhook(self, bot_id: str, bot_token: str):
         """Configure le webhook pour un bot spécifique."""
         url = f"https://api.telegram.org/bot{bot_token}/setWebhook"
-        webhook_url = f"{self.base_url}/{bot_id}"
+        webhook_url = f"{self.base_url}{bot_id}"
         payload = {"url": webhook_url}
 
         try:
@@ -23,14 +24,12 @@ class WebhookManager:
             print(f"Failed to set webhook for bot: {bot_id}. Error: {e}")
             return {"status": "error", "bot_id": bot_id, "error": str(e)}
 
-    def set_webhooks_for_all(self, bots_folder: str):
-        """Configure les webhooks pour tous les bots présents dans le dossier spécifié."""
-        bot_files = glob.glob(os.path.join(bots_folder, "*bot.py"))
-        bot_names = [os.path.splitext(os.path.basename(file))[0] for file in bot_files]
-
+    def set_webhooks_for_all(self):
+        """Configure les webhooks pour tous les bots définis dans BOT_CONFIG."""
         results = []
-        for bot_name in bot_names:
-            bot_token = os.environ.get(bot_name)
+
+        for bot_name in BOT_CONFIG:
+            bot_token = get_secret("telegrams_bots",bot_name)
             if not bot_token:
                 print(f"No token found for bot: {bot_name}. Skipping...")
                 results.append(

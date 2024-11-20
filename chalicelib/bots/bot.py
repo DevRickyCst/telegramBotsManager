@@ -1,62 +1,47 @@
 from chalicelib.utils.secret import get_secret
-from typing import Callable, Dict, List
-
+from typing import Callable, Dict, List, Optional
 from chalicelib.src.telegram.message import Message
 from chalicelib.src.telegram.telegram import TelegramInterface
 
+class TelegramBot:
+    """Base class for all bots, with support for commands and handling messages."""
 
-class BaseBot:
-    """Base class for all bots."""
-
-    def __init__(self, bot_id: str):
-        bot_key = get_secret("telegrams_bots", bot_id)
-        self.bot_name = bot_id
-        self.telegram = TelegramInterface(bot_key)
-
-    def welcome(self, chat_id: str):
-        """Send a welcome message."""
-        welcome_message = f"Welcome to {self.bot_name}!"
-        self.telegram.sendMessage(welcome_message, chat_id=chat_id)
-
-    def describe_commands(self, chat_id: str):
-        """Describe available commands for the bot."""
-        desc = f"Bot {self.bot_name} has no commands available."
-        self.telegram.sendMessage(desc, chat_id=chat_id)
-
-        
-
-class AdvancedBot(BaseBot):
-    """Advanced bot supporting commands."""
-
-    def __init__(self, bot_id: str, commands: List[Dict[str, Callable]]):
+    def __init__(self, bot_id: str, commands: Optional[List[Dict[str, Callable]]] = None):
         """
-        Initialize the bot with commands.
+        Initialize the bot.
 
         Args:
             bot_id (str): The ID of the bot.
-            commands (List[Dict[str, Callable]]): List of commands with their handlers.
+            commands (Optional[List[Dict[str, Callable]]]): A list of commands with their handlers (optional).
         """
-        super().__init__(bot_id)
-        self.commands = {cmd["command"]: cmd["handler"] for cmd in commands}
-
-    def describe_commands(self, chat_id: str, send: bool = True):
-        """Describe the available commands."""
-        description = "List of Available commands:\n"
-        for command in self.commands.keys():
-            description += f"- /{command}\n"
-        if send:
-            self.telegram.sendMessage(description, chat_id=chat_id)
+        bot_key = get_secret("telegrams_bots", bot_id)
+        self.bot_name = bot_id
+        self.telegram = TelegramInterface(bot_key)
+        
+        # If commands are provided, initialize the command dictionary
+        if commands:
+            self.commands = {cmd["command"]: cmd["handler"] for cmd in commands}
         else:
-            return description
+            self.commands = {}
+
+    def describe_commands(self):
+        """Describe available commands for the bot."""
+        if self.commands:
+            description = "List of Available commands:\n"
+            for command in self.commands.keys():
+                description += f"- /{command}\n"
+        else:
+            description = f"Bot {self.bot_name} has no commands available."
+
+        return description
 
     def handle_message(self, message: Message):
         """Handle the message based on the command."""
         try:
-            # Find and execute the corresponding command handler
-            print(message.input["command"])
             command = message.input["command"]
-            if command in list(self.commands.keys()):
-                print("ok")
+            if command == 'help':
+                self.telegram.sendMessage(self.describe_commands(), chat_id=message.chat["id"])
+            elif command in self.commands:
                 handler_function = self.commands[command]
                 response = handler_function(message)
                 self.telegram.sendMessage(response, chat_id=message.chat["id"])

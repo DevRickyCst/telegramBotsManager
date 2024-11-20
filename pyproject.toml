@@ -11,6 +11,7 @@ chalice = "^1.31.2"
 openai = "^1.54.4"
 python-telegram-bot = "^21.7"
 boto3 = "^1.35.65"
+requests = "^2.32.3"
 
 
 [tool.poetry.group.dev.dependencies]
