@@ -1,10 +1,10 @@
 {
   "resources": [
     {
-      "name": "default-role",
+      "name": "alertewaterbot_schedule_role",
       "resource_type": "iam_role",
-      "role_arn": "arn:aws:iam::859456618518:role/telegramBotManager-dev",
-      "role_name": "telegramBotManager-dev"
+      "role_arn": "arn:aws:iam::859456618518:role/telegramBotManager-dev-alertewaterbot_schedule",
+      "role_name": "telegramBotManager-dev-alertewaterbot_schedule"
     },
     {
       "name": "alertewaterbot_schedule",
@@ -15,6 +15,12 @@
       "name": "alertewaterbot_schedule-event",
       "resource_type": "cloudwatch_event",
       "rule_name": "telegramBotManager-dev-alertewaterbot_schedule-event"
+    },
+    {
+      "name": "api_handler_role",
+      "resource_type": "iam_role",
+      "role_arn": "arn:aws:iam::859456618518:role/telegramBotManager-dev-api_handler",
+      "role_name": "telegramBotManager-dev-api_handler"
     },
     {
       "name": "api_handler",

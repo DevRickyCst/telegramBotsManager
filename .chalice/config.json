@@ -2,8 +2,9 @@
     "version":"2.0",
     "app_name":"telegramBotManager",
     "stages":{
-       "dev":{
-          "api_gateway_stage":"api"
+      "dev": {
+         "autogen_policy": false,
+         "iam_policy_file": "policy.json"
        }
     },
   "iam_role_policy": "policy.json"
