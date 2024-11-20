@@ -1,4 +1,4 @@
-import os
+from chalicelib.utils.secret import get_secret
 from typing import Callable, Dict, List
 
 from chalicelib.src.telegram.message import Message
@@ -9,7 +9,7 @@ class BaseBot:
     """Base class for all bots."""
 
     def __init__(self, bot_id: str):
-        bot_key = os.getenv(bot_id)
+        bot_key = get_secret("telegrams_bots", bot_id)
         self.bot_name = bot_id
         self.telegram = TelegramInterface(bot_key)
 
@@ -23,6 +23,7 @@ class BaseBot:
         desc = f"Bot {self.bot_name} has no commands available."
         self.telegram.sendMessage(desc, chat_id=chat_id)
 
+        
 
 class AdvancedBot(BaseBot):
     """Advanced bot supporting commands."""
