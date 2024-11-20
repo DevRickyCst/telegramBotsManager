@@ -1,9 +1,8 @@
-import glob
-import os
-
 import requests
-from chalicelib.bots import BOT_CONFIG
+
+from chalicelib.bots.telegram import BOT_CONFIG
 from chalicelib.utils.secret import get_secret
+
 
 class WebhookManager:
     def __init__(self, base_url: str):
@@ -29,7 +28,7 @@ class WebhookManager:
         results = []
 
         for bot_name in BOT_CONFIG:
-            bot_token = get_secret("telegrams_bots",bot_name)
+            bot_token = get_secret("telegrams_bots", bot_name)
             if not bot_token:
                 print(f"No token found for bot: {bot_name}. Skipping...")
                 results.append(

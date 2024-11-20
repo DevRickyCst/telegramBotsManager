@@ -1,76 +1,46 @@
 from typing import Optional
 
-from chalicelib.bots.bot import TelegramBot
-from chalicelib.src.blockchain import BockchainInterface
-from chalicelib.src.gmail import Gmail
-from chalicelib.src.gpt import Gpt
-from chalicelib.src.meteo import obtenir_meteo_ville
-from chalicelib.src.telegram.message import Message
-
-# Bot-specific handlers
-blockchain = BockchainInterface()
-gmail = Gmail()
-gpt = Gpt()
-
-
-def get_price(message: Message):
-    try:
-        symbolprice = blockchain.getPrice(symbol=message.input["text"])
-        return f"{message.input['text'].upper()}/USDT : {symbolprice}"
-    except BaseException:
-        return "Check the symbol you asked for."
-
-
-def send_mail(message: Message):
-    try:
-        if message.user["id"] == 426680033:
-            gmail.send_email(
-                "hello", message.input["text"], "dev.creusot.aym@gmail.com"
-            )
-        return "Mail sent."
-    except:
-        return "Une erreur est apparu. Le mail n'as pas été envoyé."
-
-
-def get_meteo(message: Message):
-    return obtenir_meteo_ville(message.input["text"])
-
-
-def call_gpt(message: Message):
-    return gpt.call_chat(message.input["text"])
-
+from chalicelib.bots.telegram.bot import TelegramBot
+from chalicelib.bots.telegram.commands import (call_gpt, get_meteo, get_price,
+                                               send_mail)
 
 # Bot Configuration
 BOT_CONFIG = {
     "blockchainbot": {
         "type": TelegramBot,
+        "default_chat_id": "426680033",
         "commands": [
             {"command": "getPrice", "handler": get_price},
         ],
     },
     "gmailbot": {
         "type": TelegramBot,
+        "default_chat_id": "426680033",
         "commands": [
             {"command": "sendMail", "handler": send_mail},
         ],
     },
     "meteobot": {
         "type": TelegramBot,
+        "default_chat_id": "426680033",
         "commands": [
             {"command": "meteo", "handler": get_meteo},
         ],
     },
     "pythongptbot": {
         "type": TelegramBot,
+        "default_chat_id": "426680033",
         "commands": [
             {"command": "chatgpt", "handler": call_gpt},
         ],
     },
     "airflowrickybot": {
         "type": TelegramBot,
+        "default_chat_id": "426680033",
     },
     "alertewaterbot": {
         "type": TelegramBot,
+        "default_chat_id": "646579882",
     },
 }
 
@@ -89,9 +59,10 @@ def get_bot(bot_id: str) -> Optional[TelegramBot]:
 
         bot_type = bot_config["type"]
         commands = bot_config.get("commands", None)
+        default_chat_id = bot_config.get("default_chat_id", None)
 
         # Créer l'instance du bot avec ses commandes
-        bot_instance: TelegramBot = bot_type(bot_id=bot_id, commands=commands)
+        bot_instance: TelegramBot = bot_type(bot_id=bot_id, commands=commands, default_chat_id=default_chat_id)
         return bot_instance
 
     except Exception as e:

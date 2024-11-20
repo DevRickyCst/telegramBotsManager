@@ -1,11 +1,12 @@
 import openai
+
 from chalicelib.utils.secret import get_secret
 
 
 class Gpt:
     def __init__(self) -> None:
         # Récupération de la clé API depuis AWS Secrets Manager
-        api_key = get_secret("api_keys", 'gpt')
+        api_key = get_secret("api_keys", "gpt")
 
         # Configuration de la clé API OpenAI globalement
         openai.api_key = api_key
@@ -32,7 +33,7 @@ class Gpt:
         """
         try:
             response = openai.Image.create(prompt=content, n=1, size="1024x1024")
-            return response['data'][0]['url']
+            return response["data"][0]["url"]
         except Exception as e:
             print(f"Error in call_image: {e}")
             return None

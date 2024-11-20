@@ -1,14 +1,13 @@
-from chalicelib.utils.secret import get_secret
-
 import requests
+
+from chalicelib.utils.secret import get_secret
 
 
 def obtenir_meteo_ville(ville):
     base_url = "http://api.openweathermap.org/data/2.5/weather"
     params = {
         "q": ville,
-        "appid": get_secret("api_keys", 'meteo')
-,
+        "appid": get_secret("api_keys", "meteo"),
         "units": "metric",  # Vous pouvez changer 'metric' en 'imperial' pour les unités impériales
         "lang": "fr",
     }

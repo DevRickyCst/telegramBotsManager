@@ -1,8 +1,8 @@
 from chalice import Chalice, Cron
 
-from chalicelib.bots import get_bot
+from chalicelib.bots.telegram import get_bot
+from chalicelib.bots.telegram.message import Message
 from chalicelib.schedules.task import send_scheduled_message
-from chalicelib.src.telegram.message import Message
 from chalicelib.utils.webhook_manager import WebhookManager
 
 app = Chalice(app_name="telegramBots")
@@ -68,6 +68,5 @@ def set_webhooks():
 def alertewaterbot_schedule(event):
     send_scheduled_message(
         bot_id="alertewaterbot",
-        chat_id="646579882",
         text="C'est l'heure de boire de l'eau !",
     )
