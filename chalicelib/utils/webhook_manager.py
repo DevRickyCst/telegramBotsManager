@@ -1,6 +1,6 @@
 import requests
 
-from chalicelib.bots.telegram import BOT_CONFIG
+from chalicelib.bots import BOT_CONFIG
 from chalicelib.utils.secret import get_secret
 
 

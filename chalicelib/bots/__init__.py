@@ -1,8 +1,7 @@
 from typing import Optional
 
 from chalicelib.bots.telegram.bot import TelegramBot
-from chalicelib.bots.telegram.commands import (call_gpt, get_meteo, get_price,
-                                               send_mail)
+from chalicelib.bots.telegram.commands import get_price
 
 # Bot Configuration
 BOT_CONFIG = {
@@ -17,21 +16,21 @@ BOT_CONFIG = {
         "type": TelegramBot,
         "default_chat_id": "426680033",
         "commands": [
-            {"command": "sendMail", "handler": send_mail},
+            # {"command": "sendMail", "handler": send_mail},
         ],
     },
     "meteobot": {
         "type": TelegramBot,
         "default_chat_id": "426680033",
         "commands": [
-            {"command": "meteo", "handler": get_meteo},
+            # {"command": "meteo", "handler": get_meteo},
         ],
     },
     "pythongptbot": {
         "type": TelegramBot,
         "default_chat_id": "426680033",
         "commands": [
-            {"command": "chatgpt", "handler": call_gpt},
+            # {"command": "chatgpt", "handler": call_gpt},
         ],
     },
     "airflowrickybot": {
@@ -62,7 +61,9 @@ def get_bot(bot_id: str) -> Optional[TelegramBot]:
         default_chat_id = bot_config.get("default_chat_id", None)
 
         # Créer l'instance du bot avec ses commandes
-        bot_instance: TelegramBot = bot_type(bot_id=bot_id, commands=commands, default_chat_id=default_chat_id)
+        bot_instance: TelegramBot = bot_type(
+            bot_id=bot_id, commands=commands, default_chat_id=default_chat_id
+        )
         return bot_instance
 
     except Exception as e:

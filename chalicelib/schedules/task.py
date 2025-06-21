@@ -1,4 +1,4 @@
-from chalicelib.bots.telegram import get_bot
+from chalicelib.bots import get_bot
 
 
 def send_scheduled_message(bot_id, text):

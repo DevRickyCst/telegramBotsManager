@@ -10,7 +10,10 @@ class TelegramBot:
     """Base class for all bots, with support for commands and handling messages."""
 
     def __init__(
-        self, bot_id: str, default_chat_id: str, commands: Optional[List[Dict[str, Callable]]] = None
+        self,
+        bot_id: str,
+        default_chat_id: str,
+        commands: Optional[List[Dict[str, Callable]]] = None,
     ):
         """
         Initialize the bot.
@@ -30,7 +33,7 @@ class TelegramBot:
         else:
             self.commands = {}
 
-    def sendMessage(self, text: str, chat_id: Optional[str]= None):
+    def sendMessage(self, text: str, chat_id: Optional[str] = None):
         chat_id = self.default_chat_id if chat_id is None else chat_id
         extra_url = "/sendMessage"
         payload = {"chat_id": chat_id, "text": text}
@@ -62,9 +65,7 @@ class TelegramBot:
         try:
             command = message.input["command"]
             if command == "help":
-                self.sendMessage(
-                    self.describe_commands(), chat_id=message.chat["id"]
-                )
+                self.sendMessage(self.describe_commands(), chat_id=message.chat["id"])
             elif command in self.commands:
                 handler_function = self.commands[command]
                 response = handler_function(message)
@@ -79,3 +80,6 @@ class TelegramBot:
                 else str(e)
             )
             self.telegram.sendMessage(error_message, chat_id=message.chat["id"])
+
+    def read_message(self, json_body) -> Message:
+        return Message(json_body)
