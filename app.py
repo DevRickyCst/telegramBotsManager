@@ -2,7 +2,6 @@ from chalice import Chalice
 
 from chalicelib.bots import get_bot
 from chalicelib.bots.telegram.message import Message
-from chalicelib.schedules.task import send_scheduled_message
 from chalicelib.utils.webhook_manager import WebhookManager
 
 app = Chalice(app_name="telegramBots")

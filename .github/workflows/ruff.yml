@@ -1,4 +1,4 @@
-name: CI
+name: Ruff Linter
 on: push
 jobs:
   build:
