@@ -1,23 +1,23 @@
-[tool.poetry]
+[project]
 name = "telegrambotsmanager"
 version = "0.1.0"
 description = ""
-authors = ["DevRickyCst <dev.creusot.aym@gmail.com>"]
 readme = "README.md"
+requires-python = ">=3.10"
 
-[tool.poetry.dependencies]
-python = "^3.10"
-chalice = "^1.31.2"
-openai = "^1.54.4"
-python-telegram-bot = "^21.7"
-boto3 = "^1.35.65"
-requests = "^2.32.3"
+dependencies = [
+    "chalice==1.32.0",
+    "openai==2.9.0",
+    "python-telegram-bot==22.5",
+    "boto3==1.42.3",
+    "requests==2.32.5",
+]
 
-
-[tool.poetry.group.dev.dependencies]
-isort = "^5.13.2"
-black = "^24.10.0"
+[tool.uv]
+dev-dependencies = [
+    "ruff==0.14.8"
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
