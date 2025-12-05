@@ -1,5 +1,5 @@
 local:
-	chalice local
+	uv run chalice local
 
 deploy:
-	chalice deploy
+	uv run chalice deploy

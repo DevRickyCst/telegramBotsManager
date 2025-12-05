@@ -15,3 +15,6 @@ chalice.egg-info/
 .vscode
 .env
 test/
+uv.lock
+.venv/
+*.egg-info/
