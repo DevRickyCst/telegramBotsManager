@@ -15,7 +15,7 @@ class TelegramMessageCommon(BaseModel):
     date: int
     text: str | None = None
 
-    def isCommand(self) -> str | None:
+    def is_command(self) -> str | None:
         """Return the command name if text starts with '/', otherwise None."""
         if not self.text.startswith("/"):
             return None
