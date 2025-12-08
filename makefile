@@ -1,8 +1,8 @@
 local:
-	uv run chalice local
+	AWS_PROFILE=perso uv run chalice local
 
 deploy:
-	uv run chalice deploy
+	AWS_PROFILE=perso uv run chalice deploy
 
 lint:
 	uv run ruff check --fix

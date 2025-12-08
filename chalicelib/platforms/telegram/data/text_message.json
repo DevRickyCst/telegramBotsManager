@@ -1,0 +1,21 @@
+{
+    "update_id": 718660297,
+    "message": {
+        "message_id": 25,
+        "from": {
+            "id": 426680033,
+            "is_bot": false,
+            "first_name": "Aymeric",
+            "username": "ricky_sct",
+            "language_code": "en"
+        },
+        "chat": {
+            "id": 426680033,
+            "first_name": "Aymeric",
+            "username": "ricky_sct",
+            "type": "private"
+        },
+        "date": 1702136903,
+        "text": "/sendMail Hello from telegram"
+    }
+}

@@ -1,7 +1,7 @@
 from typing import Optional
 
-from chalicelib.bots.telegram.bot import TelegramBot
-from chalicelib.bots.telegram.commands import get_price
+from chalicelib.platforms.telegram.bot import TelegramBot
+from chalicelib.platforms.telegram.bot.commands import get_price
 
 # Bot Configuration
 BOT_CONFIG = {

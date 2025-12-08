@@ -1,8 +1,7 @@
 from typing import Callable, Dict, List, Optional
 
-import requests
-
-from chalicelib.bots.telegram.message import Message
+from chalicelib.platforms.telegram.client import TelegramClient
+from chalicelib.platforms.telegram.models.webhook.message import TelegramTextMessage
 from chalicelib.utils.secret import get_secret
 
 
@@ -25,29 +24,13 @@ class TelegramBot:
         bot_key = get_secret("telegrams_bots", bot_id)
         self.default_chat_id = default_chat_id
         self.bot_name = bot_id
-        self.url = f"https://api.telegram.org/bot{bot_key}"
+        self.client = TelegramClient(bot_token=bot_key)
 
         # If commands are provided, initialize the command dictionary
         if commands:
             self.commands = {cmd["command"]: cmd["handler"] for cmd in commands}
         else:
             self.commands = {}
-
-    def sendMessage(self, text: str, chat_id: Optional[str] = None):
-        chat_id = self.default_chat_id if chat_id is None else chat_id
-        extra_url = "/sendMessage"
-        payload = {"chat_id": chat_id, "text": text}
-        print(self.url + extra_url)
-        return requests.post(self.url + extra_url, data=payload)
-
-    def sendImage(self, text: str, chat_id: str):
-        extra_url = "/sendPhoto"
-        payload = {
-            "chat_id": chat_id,
-            "photo": text,
-        }
-        print(self.url + extra_url)
-        return requests.post(self.url + extra_url, data=payload)
 
     def describe_commands(self):
         """Describe available commands for the bot."""
@@ -60,16 +43,25 @@ class TelegramBot:
 
         return description
 
-    def handle_message(self, message: Message):
+    def handle_message(self, message: TelegramTextMessage):
         """Handle the message based on the command."""
         try:
-            command = message.input["command"]
+            command = message.is_command()
             if command == "help":
-                self.sendMessage(self.describe_commands(), chat_id=message.chat["id"])
+                self.client.sendMessage(
+                    chat_id=message.chat.id, text=self.describe_commands()
+                )
             elif command in self.commands:
+                print(
+                    self.client.set_message_reaction(
+                        message_id=message.message_id,
+                        chat_id=message.chat.id,
+                        reaction="👀",
+                    )
+                )
                 handler_function = self.commands[command]
                 response = handler_function(message)
-                self.sendMessage(response, chat_id=message.chat["id"])
+                self.client.send_message(chat_id=message.chat.id, text=response)
             else:
                 raise ValueError("Command not recognized")
         except Exception as e:
@@ -79,7 +71,5 @@ class TelegramBot:
                 if isinstance(e, ValueError)
                 else str(e)
             )
-            self.telegram.sendMessage(error_message, chat_id=message.chat["id"])
-
-    def read_message(self, json_body) -> Message:
-        return Message(json_body)
+            print(f"Error handling message: {e}")
+            self.client.send_message(chat_id=message.chat.id, text=error_message)

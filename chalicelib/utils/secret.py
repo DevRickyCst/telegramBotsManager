@@ -25,7 +25,6 @@ def get_secret(secret: str, bot_id: str) -> str:
         # If the secret is JSON, parse it to extract the required key
         try:
             secret_dict = json.loads(secret)
-            print(secret_dict.get(bot_id))
             return secret_dict.get(
                 bot_id
             )  # Adjust key name based on your stored format
