@@ -18,7 +18,6 @@ class TelegramChat(BaseModel):
     type: str
     title: str | None = None
     username: str | None = None
-    type: str | None = None
 
 
 class TelegramImage(BaseModel):

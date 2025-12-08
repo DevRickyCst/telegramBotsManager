@@ -2,7 +2,9 @@ from pydantic import BaseModel, Field
 
 from chalicelib.platforms.telegram.models.webhook.common import (
     TelegramChat,
+    TelegramImage,
     TelegramUser,
+    TelegramVideo,
 )
 
 
@@ -15,7 +17,11 @@ class TelegramMessageCommon(BaseModel):
     date: int
     text: str | None = None
 
-    def is_command(self) -> str | None:
+
+class TelegramTextMessage(TelegramMessageCommon):
+    """Telegram webhook message model for text messages."""
+
+    def isCommand(self) -> str | None:
         """Return the command name if text starts with '/', otherwise None."""
         if not self.text.startswith("/"):
             return None
@@ -25,16 +31,10 @@ class TelegramMessageCommon(BaseModel):
         return parts[0] if parts else None
 
 
-class TelegramTextMessage(TelegramMessageCommon):
-    """Telegram webhook message model for text messages."""
-
-    pass
-
-
 class TelegramVideoMessage(TelegramMessageCommon):
     """Telegram webhook message model for video messages."""
 
-    video: dict
+    video: TelegramVideo
     media_group_id: str | None = None
     caption: str | None = None
 
@@ -42,7 +42,7 @@ class TelegramVideoMessage(TelegramMessageCommon):
 class TelegramImageMessage(TelegramMessageCommon):
     """Telegram webhook message model for image messages."""
 
-    photo: list
+    photo: list[TelegramImage]
     media_group_id: str | None = None
     caption: str | None = None
 
