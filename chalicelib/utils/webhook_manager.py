@@ -1,6 +1,6 @@
 import requests
 
-from chalicelib.bots import BOT_CONFIG
+from chalicelib.platforms.telegram.bot.bots import BOT_CONFIG
 from chalicelib.utils.secret import get_secret
 
 
@@ -11,6 +11,7 @@ class WebhookManager:
     def set_webhook(self, bot_id: str, bot_token: str):
         """Configure le webhook pour un bot spécifique."""
         url = f"https://api.telegram.org/bot{bot_token}/setWebhook"
+        # url = "https://hip-onagraceous-arianna.ngrok-free.dev"
         webhook_url = f"{self.base_url}{bot_id}"
         payload = {"url": webhook_url}
 

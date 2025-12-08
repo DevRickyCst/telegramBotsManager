@@ -12,6 +12,7 @@ class BockchainInterface:
         }
 
     def getPrice(self, symbol: str = "BTC", device: str = "USDT"):
+        print(f"Getting price for {symbol}/{device}")
         symbol = symbol.upper().replace(" ", "")
         url = (
             self.coin_market_cap_url

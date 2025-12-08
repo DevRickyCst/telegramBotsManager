@@ -1,37 +1,45 @@
 from chalice import Chalice
 
-from chalicelib.bots import get_bot
-from chalicelib.bots.telegram.message import Message
+from chalicelib.platforms.telegram.bot.bots import get_bot
+from chalicelib.platforms.telegram.models.webhook.message import (
+    TelegramImageMessage,
+    TelegramRaw,
+    TelegramTextMessage,
+    TelegramVideoMessage,
+)
 from chalicelib.utils.webhook_manager import WebhookManager
 
 app = Chalice(app_name="telegramBots")
 
 
 webhook_manager = WebhookManager(
-    "https://6sm86mr5n3.execute-api.eu-central-1.amazonaws.com/api/"
+    "https://hip-onagraceous-arianna.ngrok-free.dev/"
+    # "https://6sm86mr5n3.execute-api.eu-central-1.amazonaws.com/api/"
 )
 
 
 @app.route("/{bot_id}", methods=["POST"])
 def webhook_index(bot_id):
     """Handle the webhook call from Telegram for a specific bot."""
-    # Get params sent by Telegram
+    print(f"Request made to {bot_id} to path /{bot_id}")
     params = app.current_request.json_body
-    # Create message object
-    message = Message(params)
+    bot = get_bot(bot_id)
+    print(params)
+    try:
+        update = TelegramRaw.model_validate(params)
+    except Exception as e:
+        app.log.error(f"Invalid Telegram payload: {e}")
+        return {"ok": True}
+    print(update)
+    message = update.message
 
-    # If the user sends a command
-    if message.input["isCommand"]:
-        print(f"Bot {bot_id} called by {message.user['username']}")
-        print(f"with params: {message}")
-
-        bot = get_bot(bot_id=bot_id)
-
+    if isinstance(message, TelegramTextMessage):
         bot.handle_message(message)
-    else:
-        print("No command was sent.")
-    # Always return ok to Telegram bot
-    return {"statusCode": 200}
+    elif isinstance(message, TelegramImageMessage):
+        print("image")
+    elif isinstance(message, TelegramVideoMessage):
+        print("video")
+    return {"ok": True}
 
 
 @app.route("/{bot_id}/send_message", methods=["POST"])

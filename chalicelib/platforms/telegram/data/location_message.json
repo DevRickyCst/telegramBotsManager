@@ -1,0 +1,24 @@
+{
+    "update_id": 725365729,
+    "message": {
+        "message_id": 748,
+        "from": {
+            "id": 426680033,
+            "is_bot": false,
+            "first_name": "Aymeric",
+            "username": "ricky_sct",
+            "language_code": "fr"
+        },
+        "chat": {
+            "id": 426680033,
+            "first_name": "Aymeric",
+            "username": "ricky_sct",
+            "type": "private"
+        },
+        "date": 1765216403,
+        "location": {
+            "latitude": 49.049571,
+            "longitude": 2.060934
+        }
+    }
+}

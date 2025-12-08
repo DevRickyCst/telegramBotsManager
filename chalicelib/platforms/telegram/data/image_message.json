@@ -1,0 +1,51 @@
+{
+    "update_id": 725365743,
+    "message": {
+        "message_id": 762,
+        "from": {
+            "id": 426680033,
+            "is_bot": false,
+            "first_name": "Aymeric",
+            "username": "ricky_sct",
+            "language_code": "fr"
+        },
+        "chat": {
+            "id": 426680033,
+            "first_name": "Aymeric",
+            "username": "ricky_sct",
+            "type": "private"
+        },
+        "date": 1765216787,
+        "media_group_id": "14121734296397924",
+        "photo": [
+            {
+                "file_id": "AgACAgQAAxkBAAIC22k3DCvKwLGQV1MspnjJz3qZ6lOcAALKC2sbSUG4Uafgruht5RLsAQADAgADcwADNgQ",
+                "file_unique_id": "AQADygtrG0lBuFF4",
+                "file_size": 1020,
+                "width": 67,
+                "height": 90
+            },
+            {
+                "file_id": "AgACAgQAAxkBAAIC22k3DCvKwLGQV1MspnjJz3qZ6lOcAALKC2sbSUG4Uafgruht5RLsAQADAgADbQADNgQ",
+                "file_unique_id": "AQADygtrG0lBuFFy",
+                "file_size": 13142,
+                "width": 240,
+                "height": 320
+            },
+            {
+                "file_id": "AgACAgQAAxkBAAIC22k3DCvKwLGQV1MspnjJz3qZ6lOcAALKC2sbSUG4Uafgruht5RLsAQADAgADeAADNgQ",
+                "file_unique_id": "AQADygtrG0lBuFF9",
+                "file_size": 57346,
+                "width": 600,
+                "height": 800
+            },
+            {
+                "file_id": "AgACAgQAAxkBAAIC22k3DCvKwLGQV1MspnjJz3qZ6lOcAALKC2sbSUG4Uafgruht5RLsAQADAgADeQADNgQ",
+                "file_unique_id": "AQADygtrG0lBuFF-",
+                "file_size": 69865,
+                "width": 960,
+                "height": 1280
+            }
+        ]
+    }
+}
