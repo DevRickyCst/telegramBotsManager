@@ -12,5 +12,5 @@ def get_price(message: TelegramTextMessage):
         symbol = message.text.replace("/getPrice", "").strip()
         symbolprice = blockchain.getPrice(symbol=symbol)
         return f"{symbol.upper()}/USDT : {symbolprice}"
-    except BaseException:
+    except Exception:
         return "Check the symbol you asked for."
