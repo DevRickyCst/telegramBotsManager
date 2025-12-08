@@ -19,14 +19,13 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'  # Utilisez la version Python compatible avec Chalice
+          python-version: '3.11'  # Utilisez la version Python compatible avec Chalice
 
       # Étape 3 : Installer les dépendances
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install chalice
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       # Étape 4 : Configurer AWS Credentials
       - name: Configure AWS credentials

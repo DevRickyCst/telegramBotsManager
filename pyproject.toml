@@ -3,7 +3,7 @@ name = "telegrambotsmanager"
 version = "0.1.0"
 description = ""
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 
 dependencies = [
     "chalice==1.32.0",
@@ -11,10 +11,11 @@ dependencies = [
     "python-telegram-bot==22.5",
     "boto3==1.42.3",
     "requests==2.32.5",
+    "pydantic==2.12.5"
 ]
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "ruff==0.14.8"
 ]
 

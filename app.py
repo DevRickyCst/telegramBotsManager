@@ -8,7 +8,7 @@ app = Chalice(app_name="telegramBots")
 
 
 webhook_manager = WebhookManager(
-    "https://6sm86mr5n3.execute-api.eu-central-1.amazonaws.com/api/"
+    "https://2yk6qiuny3.execute-api.eu-central-1.amazonaws.com/api/"
 )
 
 

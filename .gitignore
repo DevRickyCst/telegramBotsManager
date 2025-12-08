@@ -18,3 +18,5 @@ test/
 uv.lock
 .venv/
 *.egg-info/
+requirements.txt
+.chalice
