@@ -1,10 +1,10 @@
 from chalicelib.platforms.telegram.models.webhook.message import (
     TelegramTextMessage,
 )
-from chalicelib.src.blockchain import BockchainInterface
+from chalicelib.src.blockchain import BlockchainInterface
 
 # Bot-specific handlers
-blockchain = BockchainInterface()
+blockchain = BlockchainInterface()
 
 
 def get_price(message: TelegramTextMessage):
