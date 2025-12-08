@@ -21,7 +21,7 @@ class TelegramMessageCommon(BaseModel):
 class TelegramTextMessage(TelegramMessageCommon):
     """Telegram webhook message model for text messages."""
 
-    def isCommand(self) -> str | None:
+    def is_command(self) -> str | None:
         """Return the command name if text starts with '/', otherwise None."""
         if not self.text.startswith("/"):
             return None

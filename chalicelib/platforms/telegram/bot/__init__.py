@@ -46,7 +46,7 @@ class TelegramBot:
     def handle_message(self, message: TelegramTextMessage):
         """Handle the message based on the command."""
         try:
-            command = message.isCommand()
+            command = message.is_command()
             if command == "help":
                 self.client.sendMessage(
                     chat_id=message.chat.id, text=self.describe_commands()
