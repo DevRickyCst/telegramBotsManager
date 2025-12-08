@@ -42,5 +42,5 @@ class TelegramVideo(BaseModel):
     file_id: str
     file_unique_id: str
     file_size: int
-    thubnail: dict | None = None
+    thumbnail: dict | None = None
     thumb: dict | None = None
