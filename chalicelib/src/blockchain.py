@@ -1,7 +1,7 @@
 import requests
 
 
-class BockchainInterface:
+class BlockchainInterface:
     """Interface in order to interact with blockchain"""
 
     def __init__(self):
