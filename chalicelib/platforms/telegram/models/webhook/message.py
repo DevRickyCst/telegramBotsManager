@@ -13,7 +13,7 @@ class TelegramMessageCommon(BaseModel):
     from_user: TelegramUser = Field(alias="from")
     chat: TelegramChat
     date: int
-    text: str
+    text: str | None = None
 
     def isCommand(self) -> str | None:
         """Return the command name if text starts with '/', otherwise None."""
@@ -28,9 +28,7 @@ class TelegramMessageCommon(BaseModel):
 class TelegramTextMessage(TelegramMessageCommon):
     """Telegram webhook message model for text messages."""
 
-    text: str | None = None
-    date: int
-    text: str | None = None
+    pass
 
 
 class TelegramVideoMessage(TelegramMessageCommon):

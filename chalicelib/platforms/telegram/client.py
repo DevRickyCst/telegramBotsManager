@@ -14,7 +14,7 @@ class TelegramClient:
     def send_message(self, chat_id: int, text: str):
         request_params = SendMessageRequest(chat_id=chat_id, text=text)
         url = f"{self.base_url}/sendMessage"
-        response = requests.post(url, json=request_params.dict())
+        response = requests.post(url, json=request_params.model_dump())
         return response.json()
 
     def set_message_reaction(self, message_id: int, chat_id: int, reaction: str):
@@ -24,5 +24,5 @@ class TelegramClient:
             chat_id=chat_id,
             reaction=[{"type": "emoji", "emoji": reaction}],
         )
-        response = requests.post(url, json=request_params.dict())
+        response = requests.post(url, json=request_params.model_dump())
         return response.json()

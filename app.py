@@ -21,16 +21,13 @@ webhook_manager = WebhookManager(
 @app.route("/{bot_id}", methods=["POST"])
 def webhook_index(bot_id):
     """Handle the webhook call from Telegram for a specific bot."""
-    print(f"Request made to {bot_id} to path /{bot_id}")
     params = app.current_request.json_body
     bot = get_bot(bot_id)
-    print(params)
     try:
         update = TelegramRaw.model_validate(params)
     except Exception as e:
         app.log.error(f"Invalid Telegram payload: {e}")
         return {"ok": True}
-    print(update)
     message = update.message
 
     if isinstance(message, TelegramTextMessage):
@@ -46,7 +43,6 @@ def webhook_index(bot_id):
 def send_message(bot_id):
     """Send a message from a bot to a specific chat."""
     params = app.current_request.json_body
-    print(f"Request made to {bot_id} to path /send_message")
 
     text = params["texte"]
     chat_id = params["chat_id"]
