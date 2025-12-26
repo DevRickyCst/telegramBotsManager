@@ -19,4 +19,4 @@ jobs:
 
       - name: Run MyPy
         run: |
-          PYTHONPATH=. uv run mypy chalicelib
+          mypy chalicelib
