@@ -17,18 +17,17 @@ class TelegramMessageCommon(BaseModel):
     date: int
     text: str | None = None
 
+    def get_command(self) -> str | None:
+        """Get command from the message if available."""
+        if self.text is not None and self.text.startswith("/"):
+            return self.text.split()[0][1:]  # Remove leading '/' and get command
+        return None
+
 
 class TelegramTextMessage(TelegramMessageCommon):
     """Telegram webhook message model for text messages."""
 
-    def is_command(self) -> str | None:
-        """Return the command name if text starts with '/', otherwise None."""
-        if not self.text.startswith("/"):
-            return None
-
-        # Remove "/", strip spaces, split words
-        parts = self.text[1:].strip().split()
-        return parts[0] if parts else None
+    pass
 
 
 class TelegramVideoMessage(TelegramMessageCommon):
