@@ -2,7 +2,9 @@ from chalicelib.platforms.base_message import Message
 from chalicelib.platforms.telegram.models.webhook.message import TelegramRaw
 
 
-def parse_telegram_message(payload: dict) -> Message:
+def parse_discord_message(payload: dict) -> Message:
+    print("Parsing Discord message:")
+    print(payload)
     raw = TelegramRaw.model_validate(payload)
     msg = raw.message
     command = msg.get_command()

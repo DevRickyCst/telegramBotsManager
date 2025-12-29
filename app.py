@@ -1,70 +1,67 @@
-from chalice import Chalice
+from typing import Optional
 
-from chalicelib.bots.factory import BotFactory
-from chalicelib.bots.registry import load_bot_settings
+from chalice.app import Chalice
+
+from chalicelib.bots.context import load_bot_context
+from chalicelib.bots.registry import list_bot_settings, load_bot_settings
 from chalicelib.bots.settings import Platform
-from chalicelib.platforms.base_parser import parse_message
-
-# from chalicelib.utils.webhook_manager import WebhookManager
+from chalicelib.webhook_manager import WebhookManager
 
 app = Chalice(app_name="telegramBots")
 
 
-# webhook_manager = WebhookManager(
-#    "https://hip-onagraceous-arianna.ngrok-free.dev"
-# "https://6sm86mr5n3.execute-api.eu-central-1.amazonaws.com/api/"
-# )
+@app.route("/webhooks/set/{platform}", methods=["POST"])
+@app.route("/webhooks/set/{platform}/{bot_name}", methods=["POST"])
+def set_webhook(platform: str, bot_name: Optional[str] = None):
+    try:
+        platform_enum = Platform(platform)
+    except ValueError:
+        return {"error": f"Unknown platform: {platform}"}
+
+    manager = WebhookManager(base_url="https://hip-onagraceous-arianna.ngrok-free.dev")
+    results = []
+
+    bots_to_configure = (
+        [load_bot_settings(platform_enum, bot_name)]
+        if bot_name
+        else list_bot_settings(platform_enum)
+    )
+
+    results = []
+    for settings in bots_to_configure:
+        try:
+            results.append(manager.set_webhook(settings))
+        except Exception as e:
+            results.append(
+                {"bot": getattr(settings, "bot_name", str(settings)), "error": str(e)}
+            )
+
+    return {"results": results}
 
 
 @app.route("/{platform}/{bot_name}", methods=["POST"])
-def webhook_index(platform: str, bot_name: str):
-    print(f"Received webhook for platform: {platform}, bot_name: {bot_name}")
-
-    """Handle the webhook call from Telegram for a specific bot."""
-
+def webhook_handler(platform: str, bot_name: str):
     try:
-        # 1️⃣ platform string → enum
-        platform_enum = Platform(platform)
+        ctx = load_bot_context(platform, bot_name)
 
-        # 2️⃣ Charger la config du bot
-        settings = load_bot_settings(platform_enum, bot_name)
+        # 1️⃣ sécurité / ping
+        ctx.adapter.verify_request(app.current_request)  # type: ignore
 
-        # 3️⃣ Créer le bot (runtime + client)
-        bot = BotFactory.create(settings)
+        if early := ctx.adapter.early_response(app.current_request):  # type: ignore
+            return early
 
-        # 4️⃣ Parser le message (platform-specific)
-        message = parse_message(
-            platform=platform_enum,
-            payload=app.current_request.json_body,
-        )
+        # 2️⃣ message
+        message = ctx.adapter.parse_message(app.current_request)  # type: ignore
+        print(message)
+        # 3️⃣ business
+        ctx.bot.handle_message(message)
 
-        # 5️⃣ Déléguer au bot
-        bot.handle_message(message)
-
-        return {"ok": "True"}
+        return {"ok": True}
 
     except ValueError as e:
-        print(str(e))
-        return {"ok": "True"}
+        return {"error": str(e)}
 
 
 @app.route("/", methods=["GET"])
 def index():
     return "Hello World"
-
-
-# @app.route("/set-webhooks", methods=["POST"])
-# def set_webhooks():
-#   """Configure webhooks for all bots."""
-# results = webhook_manager.set_webhooks_for_all()
-# return {"status": "Webhooks configured", "results": results}
-
-
-# @app.schedule(
-#    Cron(1, "10,14", "*", "*", "?", "*")
-# )  # Every 2 hours between 8 AM and 4 PM
-# def alertewaterbot_schedule(event):
-#    send_scheduled_message(
-#        bot_id="alertewaterbot",
-#        text="ok",
-#    )

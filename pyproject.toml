@@ -10,13 +10,14 @@ dependencies = [
     "openai==2.9.0",
     "python-telegram-bot==22.5",
     "boto3==1.42.3",
-    "requests==2.32.5",
+    "requests==2.32.4",
+    "PyNaCl==1.6.1",
 ]
 
 [project.optional-dependencies]
 dev = [
     "ruff==0.14.8",
-    "mypy==1.19.1",
+    "pyright==1.1.406",
     "types-requests==2.31.0.20231231",
 ]
 

@@ -2,7 +2,7 @@ from typing import Callable
 
 from chalicelib.platforms.base_message import Message
 
-Handler = Callable[[Message], None]
+Handler = Callable[[Message], str]
 
 
 class CommandRouter:

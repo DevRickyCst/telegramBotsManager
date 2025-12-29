@@ -7,6 +7,7 @@ from chalicelib.bots.commands import CommandRouter
 
 class Platform(Enum):
     TELEGRAM = "telegram"
+    DISCORD = "discord"
 
 
 class BotSettingBase(BaseModel):

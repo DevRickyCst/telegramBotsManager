@@ -7,5 +7,5 @@ deploy:
 lint:
 	uv run ruff check --fix
 
-mypy:
-	uv run mypy chalicelib
+pyright:
+	uv run pyright chalicelib
