@@ -2,6 +2,7 @@ from chalicelib.bots.factory import BotFactory
 from chalicelib.bots.runtime import BotRuntime
 from chalicelib.bots.settings import BotSettingBase
 from chalicelib.platforms.factory import get_platform_adapter
+from chalicelib.utils.secret import get_secret
 
 
 class WebhookManager:
@@ -11,7 +12,7 @@ class WebhookManager:
     def set_webhook(self, settings: BotSettingBase) -> dict:
         try:
             # Création du runtime pour le bot
-            runtime = BotRuntime.from_env()
+            runtime = BotRuntime(bot_token=get_secret())
 
             # Récupération de l'adapter correct pour la plateforme
             adapter = get_platform_adapter(settings.platform)
