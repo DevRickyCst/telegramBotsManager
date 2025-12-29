@@ -6,3 +6,6 @@ deploy:
 
 lint:
 	uv run ruff check --fix
+
+pyright:
+	uv run pyright chalicelib

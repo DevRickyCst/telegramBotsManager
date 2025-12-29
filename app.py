@@ -1,74 +1,65 @@
-from chalice import Chalice
+from typing import Optional
 
-from chalicelib.platforms.telegram.bot.bots import get_bot
-from chalicelib.platforms.telegram.models.webhook.message import (
-    TelegramImageMessage,
-    TelegramRaw,
-    TelegramTextMessage,
-    TelegramVideoMessage,
-)
-from chalicelib.utils.webhook_manager import WebhookManager
+from chalice.app import Chalice
+
+from chalicelib.bots.context import load_bot_context
+from chalicelib.bots.registry import list_bot_settings, load_bot_settings
+from chalicelib.bots.settings import Platform
+from chalicelib.webhook_manager import WebhookManager
 
 app = Chalice(app_name="telegramBots")
 
 
-webhook_manager = WebhookManager(
-    "https://hip-onagraceous-arianna.ngrok-free.dev/"
-    # "https://6sm86mr5n3.execute-api.eu-central-1.amazonaws.com/api/"
-)
-
-
-@app.route("/{bot_id}", methods=["POST"])
-def webhook_index(bot_id):
-    """Handle the webhook call from Telegram for a specific bot."""
-    params = app.current_request.json_body
-    bot = get_bot(bot_id)
+@app.route("/webhooks/set/{platform}", methods=["POST"])
+@app.route("/webhooks/set/{platform}/{bot_name}", methods=["POST"])
+def set_webhook(platform: str, bot_name: Optional[str] = None):
     try:
-        update = TelegramRaw.model_validate(params)
-    except Exception as e:
-        app.log.error(f"Invalid Telegram payload: {e}")
-        return {"ok": True}
-    message = update.message
+        platform_enum = Platform(platform)
+    except ValueError:
+        return {"error": f"Unknown platform: {platform}"}
 
-    if isinstance(message, TelegramTextMessage):
-        bot.handle_message(message)
-    elif isinstance(message, TelegramImageMessage):
-        print("image")
-    elif isinstance(message, TelegramVideoMessage):
-        print("video")
+    manager = WebhookManager(base_url="https://hip-onagraceous-arianna.ngrok-free.dev")
+    results = []
+
+    bots_to_configure = (
+        [load_bot_settings(platform_enum, bot_name)]
+        if bot_name
+        else list_bot_settings(platform_enum)
+    )
+
+    results = []
+    for settings in bots_to_configure:
+        try:
+            results.append(manager.set_webhook(settings))
+        except Exception as e:
+            results.append(
+                {"bot": getattr(settings, "bot_name", str(settings)), "error": str(e)}
+            )
+
+    return {"results": results}
+
+
+@app.route("/{platform}/{bot_name}", methods=["POST"])
+def webhook_handler(platform: str, bot_name: str):
+    print(f"Handling webhook for platform: {platform}, bot: {bot_name}")
+
+    ctx = load_bot_context(platform, bot_name)
+
+    # 1️⃣ sécurité / ping
+    ctx.adapter.verify_request(app.current_request)  # type: ignore
+
+    if early := ctx.adapter.early_response(app.current_request):  # type: ignore
+        return early
+
+    # 2️⃣ message
+    message = ctx.adapter.parse_message(app.current_request)  # type: ignore
+    print(message)
+    # 3️⃣ business
+    ctx.bot.handle_message(message)
+
     return {"ok": True}
-
-
-@app.route("/{bot_id}/send_message", methods=["POST"])
-def send_message(bot_id):
-    """Send a message from a bot to a specific chat."""
-    params = app.current_request.json_body
-
-    text = params["texte"]
-    chat_id = params["chat_id"]
-
-    bot = get_bot(bot_id=bot_id)
-
-    bot.telegram.sendMessage(text=text, chat_id=chat_id)
 
 
 @app.route("/", methods=["GET"])
 def index():
     return "Hello World"
-
-
-@app.route("/set-webhooks", methods=["POST"])
-def set_webhooks():
-    """Configure webhooks for all bots."""
-    results = webhook_manager.set_webhooks_for_all()
-    return {"status": "Webhooks configured", "results": results}
-
-
-# @app.schedule(
-#    Cron(1, "10,14", "*", "*", "?", "*")
-# )  # Every 2 hours between 8 AM and 4 PM
-# def alertewaterbot_schedule(event):
-#    send_scheduled_message(
-#        bot_id="alertewaterbot",
-#        text="ok",
-#    )
