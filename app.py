@@ -41,25 +41,23 @@ def set_webhook(platform: str, bot_name: Optional[str] = None):
 
 @app.route("/{platform}/{bot_name}", methods=["POST"])
 def webhook_handler(platform: str, bot_name: str):
-    try:
-        ctx = load_bot_context(platform, bot_name)
+    print(f"Handling webhook for platform: {platform}, bot: {bot_name}")
 
-        # 1️⃣ sécurité / ping
-        ctx.adapter.verify_request(app.current_request)  # type: ignore
+    ctx = load_bot_context(platform, bot_name)
 
-        if early := ctx.adapter.early_response(app.current_request):  # type: ignore
-            return early
+    # 1️⃣ sécurité / ping
+    ctx.adapter.verify_request(app.current_request)  # type: ignore
 
-        # 2️⃣ message
-        message = ctx.adapter.parse_message(app.current_request)  # type: ignore
-        print(message)
-        # 3️⃣ business
-        ctx.bot.handle_message(message)
+    if early := ctx.adapter.early_response(app.current_request):  # type: ignore
+        return early
 
-        return {"ok": True}
+    # 2️⃣ message
+    message = ctx.adapter.parse_message(app.current_request)  # type: ignore
+    print(message)
+    # 3️⃣ business
+    ctx.bot.handle_message(message)
 
-    except ValueError as e:
-        return {"error": str(e)}
+    return {"ok": True}
 
 
 @app.route("/", methods=["GET"])
